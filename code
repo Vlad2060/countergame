@@ -1,64 +1,109 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <title>Лічильник</title>
+    <style>
+        body, html {
+             margin: 0;
+             width: 100%;
+             height: 100%;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             flex-direction: column;
+        }
+        button {
+            padding: 2vh;
+            border: none;
+            font-size: 2vh;
+        }
+        button.red {
+            width: 100px;
+            height: 100px;
+            border: none;
+            border-radius: 100%;
+            background-color: red;
+            margin: 20px;
+        }
+        button.red:active {
+            animation: pop 0.2s;
+        }
+        @keyframes pop{
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.2);
+            }
+        }
+        article.shop {
+            width: 100%;
+            height: 20vh;
+            border-top: 10px solid rgb(226, 133, 133);
+            position: fixed;
+            bottom: 0;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+        h1 {
+            font-size: 5vh;
+        }
+        p, p * {
+            font-size: 3vh;
+        }
+    </style>
 </head>
-<style>
-body, html {
-     margin: 0;
-     width: 100%;
-     height: 100%;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     flex-direction: column;
-}
-button.red {
-    width: 100px;
-    height: 100px;
-    border: none;
-    border-radius: 100%;
-    background-color: red;
-    margin: 20px;
-}
-button.red:active {
-    animation: pop 0.2s;
-}
-@keyframes pop{
-    from {
-        transform: scale(1);
-    }
-    to {
-        transform: scale(1.2);
-    }
-}
-</style>
 <body>
     <h1>Лічильник</h1>
     <p>Значення: <span id="counter">0</span></p>
     <button class="red" onclick="bigger()"></button>
-    <button onclick="buyCofee()">Buy coffe</button>
+        <article class="shop">
+            <button onclick="buy('coffee', 10, 2)">Buy <i class="fa-solid fa-mug-saucer"></i></button>
+            <button onclick="buy('burger', 30, 4)">Buy <i class="fa-solid fa-burger"></i></button>
+            <button onclick="buy('Phone', 100, 10)">Buy <i class="fa-solid fa-mobile"></i></button>
+        </article>
     <script>
-        let cout = 0;
-        let i = 1;
+        class Counter {
+            constructor() {
+                this.count = 0;
+                this.increment = 1;
+                this.coffeePurchased = false;
+                this.burgerPurchased = false;
+            }
 
-        let coffe = false;
+            increase() {
+                this.count += this.increment;
+                document.getElementById("counter").textContent = this.count;
+            }
 
-        function bigger() {
-            cout += i;
-            document.getElementById("counter").textContent = cout;
-        }
-
-        function buyCofee() {
-            if (coffe === false) {
-                cout -= 10;
-                coffe = true;
-                i = 3;
-                document.getElementById("counter").textContent = cout;
-            } else {
-                alert("Not enouth!");
+            buy(item, itemPrice, newItemIncrement) {
+                if (!this[item + 'Purchased']) {
+                    if (this.count >= itemPrice) {
+                        this.count -= itemPrice;
+                        this[item + 'Purchased'] = true;
+                        this.increment = newItemIncrement;
+                        document.getElementById("counter").textContent = this.count;
+                    } else {
+                        alert("Not enough!");
+                    }
+                } else {
+                    alert("You have already purchased a " + item + "!");
+                }
             }
         }
+
+        const counter = new Counter();
+
+        function bigger() {
+            counter.increase();
+        }
+
+        function buy(item, itemPrice, newItemIncrement) {
+            counter.buy(item, itemPrice, newItemIncrement);
+        }
+
     </script>
 </body>
 </html>
